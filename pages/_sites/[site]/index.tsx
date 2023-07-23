@@ -1,3 +1,4 @@
+import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { getHostnameDataBySubdomain, getSubdomainPaths } from "@/lib/db";
 
@@ -7,6 +8,10 @@ export interface Props {
   description: String
   subdomain: String
   customDomain: String
+}
+
+type StaticPropsParams = {
+  site: string;
 }
 
 export default function Index(props: Props) {
@@ -42,7 +47,9 @@ export async function getStaticPaths() {
 }
 
 // Getting data to display on each custom subdomain
-export async function getStaticProps({ params: { site } }) {
+export async function getStaticProps(context: GetStaticPropsContext) {
+  const { site } = context.params as StaticPropsParams;
+
   const sites = await getHostnameDataBySubdomain(site);
 
   return {
